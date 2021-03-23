@@ -59,5 +59,17 @@ class Follow(models.Model):
         related_name='following',
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_object_user',
+            ),
+            models.CheckConstraint(
+                name='unique_object_following',
+                check=~models.Q(user=models.F('following')),
+            ),
+        ]
+
     def __str__(self):
         return f'{self.following} подписан на {self.user}'
